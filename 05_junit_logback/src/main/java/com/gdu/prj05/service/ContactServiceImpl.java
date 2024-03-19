@@ -16,25 +16,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class ContactServiceImpl implements ContactService {
-  
-  private final ContactDao contactDao;
 
+  private final ContactDao contactDao;
+  
   @Override
   public void registerContact(HttpServletRequest request, HttpServletResponse response) {
-    // 등록할 ContactDto
+    
+    // 등록(성공->목록보기, 실패->뒤로가기)
+    
+    // 등록할 ContactDto 생성
     ContactDto contact = ContactDto.builder()
-                                   .name(request.getParameter("name"))
-                                   .mobile(request.getParameter("mobile"))
-                                   .email(request.getParameter("email"))
-                                   .address(request.getParameter("address"))
-                                   .build();
-    // try {
+                              .name(request.getParameter("name"))
+                              .mobile(request.getParameter("mobile"))
+                              .email(request.getParameter("email"))
+                              .address(request.getParameter("address"))
+                            .build();
+    
     // 등록
     int insertCount = contactDao.registerContact(contact);
-    // db에서 not null 같은 조건 지키지 않으면 dao에 registercontact 호출했을 때 예외 발생
-    // 20byte 적기로 했는데 그 이상 적었을 경우도 예외 발생
-    // 해결하기 위해서는 try를 등록 위에 넣어주고
-    // catch 부분에서 실패 시 응답코드를 적어주면 예외처리 됨
     
     // 등록 결과에 따른 응답
     response.setContentType("text/html; charset=UTF-8");
@@ -52,24 +51,25 @@ public class ContactServiceImpl implements ContactService {
       out.flush();
       out.close();
     } catch (Exception e) {
-      e.printStackTrace(); 
+      e.printStackTrace();
     }
-
+    
   }
 
   @Override
   public void modifyContact(HttpServletRequest request, HttpServletResponse response) {
-    // 수정(성공 -> 상세보기, 실패 -> 뒤로가기)
     
+    // 수정(성공->상세보기, 실패->뒤로가기)
+
     // 수정할 ContactDto 생성
     int contactNo = Integer.parseInt(request.getParameter("contact-no"));
     ContactDto contact = ContactDto.builder()
-                                   .contactNo(contactNo)
-                                   .name(request.getParameter("name"))
-                                   .mobile(request.getParameter("mobile"))
-                                   .email(request.getParameter("email"))
-                                   .address(request.getParameter("address"))
-                                   .build();
+                              .contactNo(contactNo)
+                              .name(request.getParameter("name"))
+                              .mobile(request.getParameter("mobile"))
+                              .email(request.getParameter("email"))
+                              .address(request.getParameter("address"))
+                            .build();
 
     // 수정
     int updateCount = contactDao.modifyContact(contact);
@@ -81,7 +81,7 @@ public class ContactServiceImpl implements ContactService {
       out.println("<script>");
       if(updateCount == 1) {
         out.println("alert('연락처가 수정되었습니다.')");
-        out.println("location.href='" + request.getContextPath() + "/contact/detail.do?contactNo=" + contactNo + "'");  // redirect 를 의미하는 코드 
+        out.println("location.href='" + request.getContextPath() + "/contact/detail.do?contact-no=" + contactNo + "'");  // redirect 를 의미하는 코드
       } else {
         out.println("alert('연락처가 수정되지 않았습니다.')");
         out.println("history.back()");
@@ -90,21 +90,22 @@ public class ContactServiceImpl implements ContactService {
       out.flush();
       out.close();
     } catch (Exception e) {
-      e.printStackTrace(); 
+      e.printStackTrace();
     }
     
   }
 
   @Override
-  public void removerContact(HttpServletRequest request, HttpServletResponse response) {
-    // 삭제(성공 -> 목록보기, 실패 -> 뒤로가기)
+  public void removeContact(HttpServletRequest request, HttpServletResponse response) {
     
-    // 삭제할 ContactNo
+    // 삭제(성공->목록보기, 실패->뒤로가기)
+    
+    // 삭제할 contactNo
     int contactNo = Integer.parseInt(request.getParameter("contact-no"));
     
     // 삭제
     int deleteCount = contactDao.removeContact(contactNo);
-
+    
     // 삭제 결과에 따른 응답
     response.setContentType("text/html; charset=UTF-8");
     try {
@@ -121,11 +122,9 @@ public class ContactServiceImpl implements ContactService {
       out.flush();
       out.close();
     } catch (Exception e) {
-      e.printStackTrace(); 
+      e.printStackTrace();
     }
-
-  
-
+    
   }
 
   @Override

@@ -33,7 +33,7 @@ public class ContactDaoImpl implements ContactDao {
 
   @Override
   public int removeContact(int contactNo) {
-    int deleteCount = sqlSessionTemplate.delete(NS + "removeContact", NS);
+    int deleteCount = sqlSessionTemplate.delete(NS + "removeContact", contactNo);
     return deleteCount;
   }
 

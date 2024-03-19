@@ -11,7 +11,7 @@
 </head>
 <body>
 
-${empty requestScope.contactList}
+  <a href="${contextPath}/contact/list.do">게시판</a>
 
 </body>
 </html>
