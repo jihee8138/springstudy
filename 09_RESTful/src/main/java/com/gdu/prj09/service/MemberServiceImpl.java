@@ -1,6 +1,7 @@
 package com.gdu.prj09.service;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -123,21 +124,42 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
-  public ResponseEntity<Map<String, Object>> modifyMember(MemberDto member) {
-    // TODO Auto-generated method stub
-    return null;
+  public ResponseEntity<Map<String, Object>> modifyMember(Map<String, Object> map) {
+    
+    int updateMemberCount = memberDao.updateMember(map);
+    int updateAddressCount = memberDao.updateAddress(map);
+    
+    if(updateAddressCount == 0) {
+      AddressDto address = AddressDto.builder()
+                                     .zonecode((String)map.get("zonecode"))
+                                     .address((String)map.get("address"))
+                                     .detailAddress((String)map.get("detailAddress"))
+                                     .extraAddress((String)map.get("extraAddress"))
+                                     .member(MemberDto.builder()
+                                                      .memberNo(Integer.parseInt((String)map.get("memberNo")))
+                                                      .build())
+                                     .build();
+      
+      // 여기에 모두 성공했을 때 숫자 2가 들어있어야 한다.
+      updateAddressCount = memberDao.insertAddress(address);
+    }
+    
+    
+    // jackson이라는 애가 데이터를 json으로 바꿔준다 이 데이터가 member.jsp로 전달된다.
+    return new ResponseEntity<Map<String,Object>>(Map.of("updateCount", updateMemberCount + updateAddressCount)
+                                                , HttpStatus.OK) ;
   }
 
   @Override
   public ResponseEntity<Map<String, Object>> removeMember(int memberNo) {
-    // TODO Auto-generated method stub
-    return null;
+    return new ResponseEntity<Map<String,Object>> (Map.of("deleteCount", memberDao.deleteMember(memberNo))
+                                                      , HttpStatus.OK);
   }
 
   @Override
-  public ResponseEntity<Map<String, Object>> removeMembers(String memberNoList) {
-    // TODO Auto-generated method stub
-    return null;
+  public ResponseEntity<Map<String, Object>> removeMembers(String memberNoList) { 
+    return new ResponseEntity<Map<String,Object>>(Map.of("deleteCount", memberDao.deleteMembers(Arrays.asList(memberNoList.split(","))))
+                                                  , HttpStatus.OK);
   }
 
 }
