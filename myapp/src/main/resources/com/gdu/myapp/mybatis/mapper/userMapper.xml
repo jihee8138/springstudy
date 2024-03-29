@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.myapp.mapper.UserMapper">
+
+<!-- 인터페이스 구현하지 않음 그래서 dao측에서 sqlsessiontemplate 안 써도 됨 -->
+
+  <select id="getUserByMap"
+          parameterType="Map"
+          resultType="UserDto">
+    SELECT USER_NO, EMAIL, PW, NAME, GENDER, MOBILE, EVENT_AGREE, SIGNUP_KIND, PW_MODIFY_DT, SIGNUP_DT
+      FROM USER_T
+    <!-- 전달된 파라미터(Map)에 이메일과 pw가 들어있으면 써라 -->
+    <where>
+      <if test="email!=null">EMAIL = #{email}</if>
+      <if test="pw!=null">AND PW = #{pw}</if>
+      <!-- 이메일이 안 오고 비밀번호만 왔을 때 오류난다 -->
+    </where>
+  
+  </select>
+  
+  
+  <insert id="insertUser"
+          parameterType="UserDto">
+    
+      
+  </insert>
+
+      
+</mapper>
