@@ -13,8 +13,10 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 @PropertySource(value = "classpath:email.properties")  // resources까지가 classpath이므로 파일명만 적어줘도 됨
+@Component
 public class MyJavaMailUtils {
   
   @Autowired
@@ -44,10 +46,9 @@ public class MyJavaMailUtils {
       MimeMessage mimeMessage = new MimeMessage(session);
       mimeMessage.setFrom(new InternetAddress(env.getProperty("spring.mail.username"), "myapp"));  // setFrom 등록 시 address 타입으로 등록
       mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));  // 받는 사람은 사용자가 이메일을 정보로 받아올꺼다
-      mimeMessage.setSubject(subject);  // 제목도 service 에서 받아올꺼다 
-      // 내용도 service 에서 받아올꺼다
-      // 임시비번 메일로 발송하기 기능 비밀번호 찾기를 누르면 
-      mimeMessage.setContent(content, "text.html; charset=UTF-8");
+      mimeMessage.setSubject(subject);
+      // 제목과 내용 service 에서 받아올꺼다
+      mimeMessage.setContent(content, "text/html; charset=UTF-8");
       
       // 메일 보내기
       Transport.send(mimeMessage);

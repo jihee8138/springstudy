@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.gdu.myapp.dto.UserDto;
 import com.gdu.myapp.mapper.UserMapper;
+import com.gdu.myapp.utils.MyJavaMailUtils;
 import com.gdu.myapp.utils.MysecurityUtils;
 
 
@@ -19,12 +20,15 @@ import com.gdu.myapp.utils.MysecurityUtils;
 public class UserServiceImpl implements UserService {
   
   private final UserMapper userMapper;
+  private final MyJavaMailUtils myJavaMailUtils;
   
-
-  public UserServiceImpl(UserMapper userMapper) {
+  
+  public UserServiceImpl(UserMapper userMapper, MyJavaMailUtils myJavaMailUtils) {
     super();
     this.userMapper = userMapper;
+    this.myJavaMailUtils = myJavaMailUtils;
   }
+  
 
   @Override
   public void signin(HttpServletRequest request, HttpServletResponse response) {
@@ -72,27 +76,11 @@ public class UserServiceImpl implements UserService {
       
     } catch (Exception e) {
       e.printStackTrace();
-    }
-    
+    }  
   }
+  
 
-  @Override
-  public void signout(HttpServletRequest request, HttpServletResponse response) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void signup(HttpServletRequest request, HttpServletResponse response) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void leave(HttpServletRequest request, HttpServletResponse response) {
-    // TODO Auto-generated method stub
-
-  }
+  
   
   @Override
   public ResponseEntity<Map<String, Object>> checkEmail(Map<String, Object> params) {
@@ -104,6 +92,44 @@ public class UserServiceImpl implements UserService {
     return new ResponseEntity<>(Map.of("enableEmail", enableEmail)
                               , HttpStatus.OK);
     // enableEmail이 JSON함수로 받아져서 fetch 함수로 넘어간다
+  }
+  
+  
+  @Override
+  public ResponseEntity<Map<String, Object>> sendCode(Map<String, Object> params) {
+    
+    // 인증코드 생성
+    String code = MysecurityUtils.getRandomString(6, true, true);  // 둘 다 false 하면 안 됨
+    
+    // 메일 보내기
+    myJavaMailUtils.sendMail((String)params.get("email")
+                           , "myapp 인증요청"
+                           , "<div>인증코드는 <strong>" + code + "</strong>입니다.");
+    
+    // 인증코드 입력화면으로 보내주는 값
+    return new ResponseEntity<>(Map.of("code", code)
+                              , HttpStatus.OK);
+  }
+  
+  
+  @Override
+  public void signout(HttpServletRequest request, HttpServletResponse response) {
+    // TODO Auto-generated method stub
+    
+  }
+  
+  
+  @Override
+  public void signup(HttpServletRequest request, HttpServletResponse response) {
+    // TODO Auto-generated method stub
+    
+  }
+  
+  
+  @Override
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+    // TODO Auto-generated method stub
+    
   }
 
 }
