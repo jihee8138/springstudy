@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,maven,java,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,maven,java,eclipse
 
+# email.properties 주석
+email.properties
+
 ### Eclipse ###
 .metadata
 bin/
