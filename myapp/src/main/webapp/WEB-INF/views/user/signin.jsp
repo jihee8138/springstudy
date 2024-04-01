@@ -28,6 +28,7 @@
   <div>
     <form method="POST"
           action="${contextPath}/user/signin.do">
+          <!-- db로 가거나 서비스 로직이 필요한 것 : .do -->
           <!-- db까지 전달되어야 하는 데이터들 -->
       <div>
         <label for="email">아이디</label>

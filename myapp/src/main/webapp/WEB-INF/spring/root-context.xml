@@ -75,6 +75,7 @@
   <aop:aspectj-autoproxy/>
   
   <!-- Mapper Interface가 저장된 패키지 명시 -->
+  <!-- @MapperScan : Mapper를 어디서 찾는지 패키지 명시. Mapper Interface가 저장된 패키지를 적어줘야 찾을 수 있다. -->
   <mybatis-spring:scan base-package="com.gdu.myapp.mapper"/>
   
 </beans>

@@ -18,15 +18,39 @@
       <if test="pw!=null">AND PW = #{pw}</if>
       <!-- 이메일이 안 오고 비밀번호만 왔을 때 오류난다 -->
     </where>
-  
   </select>
   
+  <insert id="insertAccessHistory"
+          parameterType="Map">
+    INSERT INTO ACCESS_HISTORY_T (
+        ACCESS_HISTORY_NO
+      , EMAIL
+      , IP
+      , SIGNIN_DT
+      , SIGNOUT_DT
+    ) VALUES (
+        ACCESS_HISTORY_SEQ.NEXTVAL
+      , #{email}
+      , #{ip}
+      , CURRENT_DATE
+      , NULL
+    )
+  </insert>
   
   <insert id="insertUser"
           parameterType="UserDto">
-    
-      
+     
   </insert>
+  
+  <select id="getLeaveUserByMap"
+          parameterType="Map"
+          resultType="LeaveuserDto">
+    SELECT LEAVE_USER_NO
+      FROM LEAVE_USER_T
+    <where>
+      <if test="email!=null">EMAIL = #{email}</if>
+    </where>
+  </select>
 
       
 </mapper>

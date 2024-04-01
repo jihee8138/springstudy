@@ -12,7 +12,7 @@
   
   <!-- typeAliases -->
   <typeAliases>
-    <typeAlias alias="AccessHistoryDto"  type="com.gdu.myapp.dto.AccessHistoryDtoDto"/>
+    <typeAlias alias="AccessHistoryDto"  type="com.gdu.myapp.dto.AccessHistoryDto"/>
     <typeAlias alias="LeaveUserDto" type="com.gdu.myapp.dto.LeaveUserDto"/>
     <typeAlias alias="UserDto" type="com.gdu.myapp.dto.UserDto"/>
   </typeAliases>

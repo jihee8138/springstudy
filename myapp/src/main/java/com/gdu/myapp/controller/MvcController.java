@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MvcController {
 
-  @GetMapping(value={"/", "/main.page"})  // 단순 페이지 이동
+  @GetMapping(value={"/", "/main.page"})
   public String welcome() {
     return "index";
   }
