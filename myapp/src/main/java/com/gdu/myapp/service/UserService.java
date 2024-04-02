@@ -12,9 +12,9 @@ public interface UserService {
   // 자바측에선 맵을 넘길껀데 화면으로 넘어갈 때는 json으로 넘어가므로 비동기 처리 
   ResponseEntity<Map<String, Object>> checkEmail(Map<String, Object> params);
   ResponseEntity<Map<String, Object>> sendCode(Map<String, Object> params);
-  
-  void signout(HttpServletRequest request, HttpServletResponse response);  // 로그아웃
   void signup(HttpServletRequest request, HttpServletResponse response);   // 가입
   void leave(HttpServletRequest request, HttpServletResponse response);    // 탈퇴
+  
+  void signout(HttpServletRequest request, HttpServletResponse response);  // 로그아웃
   
 }

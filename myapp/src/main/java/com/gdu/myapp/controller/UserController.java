@@ -1,9 +1,12 @@
 package com.gdu.myapp.controller;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.gdu.myapp.dto.UserDto;
 import com.gdu.myapp.service.UserService;
 
 @RequestMapping("/user")
@@ -56,6 +61,19 @@ public class UserController {
     // Sign In 페이지로 url 또는 referer 넘겨 주기
     model.addAttribute("url", url);
     
+    /* 네이버 로그인 1 */
+    String redirectUri = "http://localhost:8080" + request.getContextPath() + "/user/naver/getAccessToken.do";
+    String state = new BigInteger(130, new SecureRandom()).toString();
+    
+    StringBuilder builder = new StringBuilder();
+    builder.append("https://nid.naver.com/oauth2.0/authorize");
+    builder.append("?response_type=code");
+    builder.append("&client_id=CE5eaK5oumYCyMIZWCIo");
+    builder.append("&redirect_uri=" + redirectUri);
+    builder.append("&state=" + state);
+    
+    model.addAttribute("naverLoginUrl", builder.toString());
+    
     return "user/signin";
   }
   
@@ -82,5 +100,29 @@ public class UserController {
   public ResponseEntity<Map<String, Object>> sendCode(@RequestBody Map<String, Object> params) {
     return userService.sendCode(params);
   }
+  
+  @PostMapping("/signup.do")
+  public void signup(HttpServletRequest request, HttpServletResponse response) {
+    userService.signup(request, response);
+  }
+  
+  @GetMapping("/leave.do")
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+    userService.leave(request, response);
+  }
+  
+  /*
+  @GetMapping("/leave.do")
+  public void leave(HttpSession session, HttpServletResponse response) {
+    UserDto user = (UserDto) session.getAttribute("user");
+  }
+  @GetMapping("/leave.do")
+  public void leave(@SessionAttribute(name="user") UserDto user, HttpServletResponse response) {   
+  }
+  */
+  
+  
+  
+  
   
 }

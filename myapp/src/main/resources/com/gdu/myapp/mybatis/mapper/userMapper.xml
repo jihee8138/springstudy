@@ -27,7 +27,7 @@
       , EMAIL
       , IP
       , SIGNIN_DT
-      , SIGNOUT_DT
+      , SIGNUP_DT
     ) VALUES (
         ACCESS_HISTORY_SEQ.NEXTVAL
       , #{email}
@@ -37,14 +37,9 @@
     )
   </insert>
   
-  <insert id="insertUser"
-          parameterType="UserDto">
-     
-  </insert>
-  
-  <select id="getLeaveUserByMap"
+   <select id="getLeaveUserByMap"
           parameterType="Map"
-          resultType="LeaveuserDto">
+          resultType="LeaveUserDto">
     SELECT LEAVE_USER_NO
       FROM LEAVE_USER_T
     <where>
@@ -52,5 +47,39 @@
     </where>
   </select>
 
-      
+  <insert id="insertUser"
+          parameterType="UserDto">
+    INSERT INTO USER_T (
+        USER_NO
+      , EMAIL
+      , PW
+      , NAME
+      , GENDER
+      , MOBILE
+      , EVENT_AGREE
+      , SIGNUP_KIND
+      , PW_MODIFY_DT
+      , SIGNUP_DT
+    ) VALUES (
+        USER_SEQ.NEXTVAL
+      , #{email}
+      , #{pw}
+      , #{name}
+      , #{gender}
+      , #{mobile}
+      , #{eventAgree}
+      , 0
+      , CURRENT_DATE
+      , CURRENT_DATE
+    )
+  </insert>
+
+
+
+
+
+
+
+
+
 </mapper>
