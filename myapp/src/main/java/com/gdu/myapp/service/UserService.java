@@ -7,14 +7,29 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseEntity;
 
+import com.gdu.myapp.dto.UserDto;
+
 public interface UserService {
-  void signin(HttpServletRequest request, HttpServletResponse response);   // 로그인
-  // 자바측에선 맵을 넘길껀데 화면으로 넘어갈 때는 json으로 넘어가므로 비동기 처리 
+
+  // 가입 및 탈퇴
   ResponseEntity<Map<String, Object>> checkEmail(Map<String, Object> params);
   ResponseEntity<Map<String, Object>> sendCode(Map<String, Object> params);
-  void signup(HttpServletRequest request, HttpServletResponse response);   // 가입
-  void leave(HttpServletRequest request, HttpServletResponse response);    // 탈퇴
+  void signup(HttpServletRequest request, HttpServletResponse response);  
+  void leave(HttpServletRequest request, HttpServletResponse response);
+
+  // 로그인 및 로그아웃
+  String getRedirectURLAfterSignin(HttpServletRequest request);
+  void signin(HttpServletRequest request, HttpServletResponse response);
+  void signout(HttpServletRequest request, HttpServletResponse response);
   
-  void signout(HttpServletRequest request, HttpServletResponse response);  // 로그아웃
+  // 네이버로그인
+  String getNaverLoginURL(HttpServletRequest request);
+  String getNaverLoginAccessToken(HttpServletRequest request);
+  UserDto getNaverLogInProfile(String accessToken);
+  boolean hasUser(UserDto user);
+  void naverSignin(HttpServletRequest request, UserDto naverUser);
+  
+  
+  
   
 }

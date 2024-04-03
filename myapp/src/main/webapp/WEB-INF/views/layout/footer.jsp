@@ -5,8 +5,11 @@
 <c:set var="contextPath" value="<%=request.getContextPath()%>"/>
 <c:set var="dt" value="<%=System.currentTimeMillis()%>"/>
 
-<jsp:include page="./layout/header.jsp"/>
-
-<h1 class="title">Welcome to myapp</h1>
+  </div>
   
-<%@ include file="./layout/footer.jsp" %>
+  <div class="footer-wrap">
+  
+  </div>
+  
+</body>
+</html>
