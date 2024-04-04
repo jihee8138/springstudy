@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
   xmlns:aop="http://www.springframework.org/schema/aop"
   xmlns:tx="http://www.springframework.org/schema/tx"
-  xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
   xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
-		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+    http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
   
   <!-- Root Context: defines shared resources visible to all other web components -->
+  
+  <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+        scope="singleton">
+    <property name="defaultEncoding" value="UTF-8"/>
+    <property name="maxUploadSizePerFile" value="10485760"/>
+    <property name="maxUploadSize" value="104857600"/>
+  </bean>
   
   <bean class="com.zaxxer.hikari.HikariConfig"
         id="hikariConfig"
@@ -40,7 +48,7 @@
     <constructor-arg ref="sqlSessionFactoryBean"/>
   </bean>
 
-    <!-- 트랜잭션 관리자 등록 -->
+  <!-- 트랜잭션 관리자 등록 -->
   <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
         id="dataSourceTransactionManager"
         scope="singleton">
@@ -52,24 +60,22 @@
              id="txAdvice">
     <tx:attributes>
       <tx:method name="*"/>
-      <tx:method name="get*" read-only="true"/>  
+      <tx:method name="get*" read-only="true"/>
     </tx:attributes>
-  
   </tx:advice>
-
+  
   <!-- Aspect 설정 -->
   <aop:config>
-    <aop:pointcut expression="execution (* com.gdu.myapp.service.*Impl.*(..))" 
+    <aop:pointcut expression="execution (* com.gdu.myapp.service.*Impl.*(..))"
                   id="txPointCut"/>
-  <aop:advisor advice-ref="txAdvice"
-               pointcut-ref="txPointCut"/>
+    <aop:advisor advice-ref="txAdvice"
+                 pointcut-ref="txPointCut"/>
   </aop:config>
   
-  <!-- AspectJ 허용(@EnableAspectJAutoProxy) -->
+  <!-- AspectJ 허용 (@EnableAspectJAutoProxy) -->
   <aop:aspectj-autoproxy/>
   
-  <!-- Mapper Interface가 저장된 패키지 명시 -->
-  <!-- @MapperScan : Mapper를 어디서 찾는지 패키지 명시. Mapper Interface가 저장된 패키지를 적어줘야 찾을 수 있다. -->
+  <!-- Mapper Interface 가 저장된 패키지 명시 -->
   <mybatis-spring:scan base-package="com.gdu.myapp.mapper"/>
   
 </beans>

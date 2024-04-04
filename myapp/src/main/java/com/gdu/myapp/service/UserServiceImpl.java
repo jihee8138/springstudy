@@ -9,7 +9,6 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -181,7 +180,7 @@ public class UserServiceImpl implements UserService {
     }
     
   }
- 
+  
   @Override
   public String getRedirectURLAfterSignin(HttpServletRequest request) {
     
@@ -224,13 +223,13 @@ public class UserServiceImpl implements UserService {
       
       // 접속 수단 (요청 헤더의 User-Agent 값)
       String userAgent = request.getHeader("User-Agent");
-      
+
       // DB로 보낼 정보 (email/pw: USER_T , email/ip/userAgent/sessionId: ACCESS_HISTORY_T) 
       Map<String, Object> params = Map.of("email", email
-          , "pw", pw
-          , "ip", ip
-          , "userAgent", userAgent
-          , "sessionId", request.getSession().getId());
+                                        , "pw", pw
+                                        , "ip", ip
+                                        , "userAgent", userAgent
+                                        , "sessionId", request.getSession().getId());
       
       // email/pw 가 일치하는 회원 정보 가져오기
       UserDto user = userMapper.getUserByMap(params);
@@ -243,13 +242,12 @@ public class UserServiceImpl implements UserService {
         
         // 회원 정보를 세션(브라우저 닫기 전까지 정보가 유지되는 공간, 기본 30분 정보 유지)에 보관하기
         HttpSession session = request.getSession();
-        session.setMaxInactiveInterval(60);
         session.setAttribute("user", user);
         
         // Sign In 후 페이지 이동
         response.sendRedirect(request.getParameter("url"));
-        
-        // 일치하는 회원 없음 (Sign In 실패)
+      
+      // 일치하는 회원 없음 (Sign In 실패)
       } else {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
@@ -266,7 +264,7 @@ public class UserServiceImpl implements UserService {
     }
     
   }
-  
+
   @Override
   public void signout(HttpServletRequest request, HttpServletResponse response) {
     
@@ -300,7 +298,7 @@ public class UserServiceImpl implements UserService {
     StringBuilder builder = new StringBuilder();
     builder.append("https://nid.naver.com/oauth2.0/authorize");
     builder.append("?response_type=code");
-    builder.append("&client_id=CE5eaK5oumYCyMIZWCIo");
+    builder.append("&client_id=NSIlxRD3gSk0BEHeKhk4");
     builder.append("&redirect_uri=" + redirectUri);
     builder.append("&state=" + state);
     
@@ -321,8 +319,8 @@ public class UserServiceImpl implements UserService {
     
     String spec = "https://nid.naver.com/oauth2.0/token";
     String grantType = "authorization_code";
-    String clientId = "CE5eaK5oumYCyMIZWCIo";
-    String clientSecret = "yCBzCBeglj";
+    String clientId = "NSIlxRD3gSk0BEHeKhk4";
+    String clientSecret = "qBkPHuLERa";
     
     StringBuilder builder = new StringBuilder();
     builder.append(spec);
@@ -335,18 +333,17 @@ public class UserServiceImpl implements UserService {
     HttpURLConnection con = null;
     JSONObject obj = null;
     
-    
     try {
-      
+    
       // 요청
       URL url = new URL(builder.toString());
       con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod("GET");  // 반드시 대문자로 작성해야 한다.
-      
+
       // 응답 스트림 생성
-      BufferedReader reader  = null;  // 성공 / 실패를 봐야하기 때문에 null 설정
+      BufferedReader reader = null;
       int responseCode = con.getResponseCode();
-      if(responseCode == HttpsURLConnection.HTTP_OK) {
+      if(responseCode == HttpURLConnection.HTTP_OK) {
         reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
       } else {
         reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
@@ -365,7 +362,6 @@ public class UserServiceImpl implements UserService {
       // 응답 스트림 닫기
       reader.close();
       
-      
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -377,10 +373,10 @@ public class UserServiceImpl implements UserService {
   }
   
   @Override
-  public UserDto getNaverLogInProfile(String accessToken) {
+  public UserDto getNaverLoginProfile(String accessToken) {
     
     /************* 네이버 로그인 3 *************/
-    // 네이버로부터 프로필 정보(이메일, [이름, 성별, 휴대전화번호])를 발급 받아 반환하는 메소드
+    // 네이버로부터 프로필 정보(이메일, [이름, 성별, 휴대전화번호]) 을 발급 받아 반환하는 메소드
     
     String spec = "https://openapi.naver.com/v1/nid/me";
     
@@ -398,9 +394,9 @@ public class UserServiceImpl implements UserService {
       con.setRequestProperty("Authorization", "Bearer " + accessToken);
       
       // 응답 스트림 생성
-      BufferedReader reader  = null;  // 성공 / 실패를 봐야하기 때문에 null 설정
+      BufferedReader reader = null;
       int responseCode = con.getResponseCode();
-      if(responseCode == HttpsURLConnection.HTTP_OK) {
+      if(responseCode == HttpURLConnection.HTTP_OK) {
         reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
       } else {
         reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
@@ -417,11 +413,11 @@ public class UserServiceImpl implements UserService {
       JSONObject obj = new JSONObject(responseBody.toString());
       JSONObject response = obj.getJSONObject("response");
       user = UserDto.builder()
-                    .email(response.getString("email"))
-                    .gender(response.has("gender") ? response.getString("gender") : null)
-                    .name(response.has("name") ? response.getString("name") : null)
-                    .mobile(response.has("mobile") ? response.getString("mobile") : null)
-                    .build();
+                .email(response.getString("email"))
+                .gender(response.has("gender") ? response.getString("gender") : null)
+                .name(response.has("name") ? response.getString("name") : null)
+                .mobile(response.has("mobile") ? response.getString("mobile") : null)
+              .build();
       
       // 응답 스트림 닫기
       reader.close();
@@ -433,12 +429,11 @@ public class UserServiceImpl implements UserService {
     con.disconnect();
     
     return user;
+    
   }
   
   @Override
   public boolean hasUser(UserDto user) {
-    
-    // null이 아니면 사용자가 있다는 것이므로 true 반환
     return userMapper.getLeaveUserByMap(Map.of("email", user.getEmail())) != null;
   }
   
@@ -453,7 +448,6 @@ public class UserServiceImpl implements UserService {
     userMapper.insertAccessHistory(map);
     
   }
-    
+
+
 }
-  
-  

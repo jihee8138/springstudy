@@ -15,13 +15,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-@PropertySource(value = "classpath:email.properties")  // resources까지가 classpath이므로 파일명만 적어줘도 됨
+@PropertySource(value = "classpath:email.properties")
 @Component
 public class MyJavaMailUtils {
-  
+
   @Autowired
-  // Environment : 애플리케이션 환경설정 파일(프로필, 프로퍼티 등)들 읽어서 처리해주는 인터페이스  
-  private Environment env;  
+  private Environment env;
   
   public void sendMail(String to, String subject, String content) {
     
@@ -32,7 +31,7 @@ public class MyJavaMailUtils {
     props.put("mail.smtp.auth", true);
     props.put("mail.smtp.starttls.enable", true);
     
-    // jajax.mail.Session 객체 생성 : 이메일을 보내는 사용자의 정보 (개인 정보)
+    // javax.mail.Session 객체 생성 : 이메일을 보내는 사용자의 정보 (개인 정보)
     Session session = Session.getInstance(props, new Authenticator() {
       @Override
       protected PasswordAuthentication getPasswordAuthentication() {
@@ -42,25 +41,21 @@ public class MyJavaMailUtils {
     });
     
     try {
+      
       // 메일 만들기 (보내는 사람 + 받는 사람 + 제목 + 내용)
       MimeMessage mimeMessage = new MimeMessage(session);
-      mimeMessage.setFrom(new InternetAddress(env.getProperty("spring.mail.username"), "myapp"));  // setFrom 등록 시 address 타입으로 등록
-      mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));  // 받는 사람은 사용자가 이메일을 정보로 받아올꺼다
+      mimeMessage.setFrom(new InternetAddress(env.getProperty("spring.mail.username"), "myapp"));
+      mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
       mimeMessage.setSubject(subject);
-      // 제목과 내용 service 에서 받아올꺼다
       mimeMessage.setContent(content, "text/html; charset=UTF-8");
       
       // 메일 보내기
       Transport.send(mimeMessage);
       
     } catch (Exception e) {
-      // 예외 발생했을 때 어디서 오류 났는지 확인하기 위해 비워두지 않기
       e.printStackTrace();
     }
     
-    
-    
-    
   }
-
+  
 }

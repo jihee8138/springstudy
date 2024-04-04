@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MyFileUtils {
-  
+
   // 현재 날짜
   public static final LocalDate TODAY = LocalDate.now();
   
@@ -27,5 +27,5 @@ public class MyFileUtils {
     }
     return UUID.randomUUID().toString().replace("-", "") + extName;
   }
-
+  
 }

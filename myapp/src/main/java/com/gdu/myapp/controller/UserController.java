@@ -83,7 +83,6 @@ public class UserController {
   @GetMapping("/naver/getAccessToken.do")
   public String getAccessToken(HttpServletRequest request) {
     String accessToken = userService.getNaverLoginAccessToken(request);
-    
     return "redirect:/user/naver/getProfile.do?accessToken=" + accessToken;
   }
   
@@ -91,17 +90,16 @@ public class UserController {
   public String getProfile(HttpServletRequest request, Model model) {
     
     // 네이버로부터 받은 프로필 정보
-    UserDto naverUser = userService.getNaverLogInProfile(request.getParameter("accessToken"));
+    UserDto naverUser = userService.getNaverLoginProfile(request.getParameter("accessToken"));
     
     // 반환 경로
     String path = null;
     
-    // 프로필이 DB에 있는 지 확인 (있으면 Sign In, 없으면 Sign Up)
+    // 프로필이 DB에 있는지 확인 (있으면 Sign In, 없으면 Sign Up)
     if(userService.hasUser(naverUser)) {
       // Sign In
       userService.naverSignin(request, naverUser);
-      
-      path = "rediret:/main.page";
+      path = "redirect:/main.page";
     } else {
       // Sign Up (네이버 가입 화면으로 이동)
       model.addAttribute("naverUser", naverUser);
@@ -109,9 +107,8 @@ public class UserController {
     }
     
     return path;
+    
   }
-  
-  
   
   @GetMapping("/signout.do")
   public void signout(HttpServletRequest request, HttpServletResponse response) {
