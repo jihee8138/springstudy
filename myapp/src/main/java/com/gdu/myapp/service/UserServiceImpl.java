@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
   
   @Override
   public void signup(HttpServletRequest request, HttpServletResponse response) {
-    
+
     // 전달된 파라미터
     String email = request.getParameter("email");
     String pw = MySecurityUtils.getSha256(request.getParameter("pw"));
@@ -243,6 +243,7 @@ public class UserServiceImpl implements UserService {
         // 회원 정보를 세션(브라우저 닫기 전까지 정보가 유지되는 공간, 기본 30분 정보 유지)에 보관하기
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
+        session.setMaxInactiveInterval(10);  // 세션 유지 시간 10초 설정
         
         // Sign In 후 페이지 이동
         response.sendRedirect(request.getParameter("url"));
@@ -252,8 +253,8 @@ public class UserServiceImpl implements UserService {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<script>");
-        out.println("alert('일치하는 회원 정보가 없습니다.')");
-        out.println("location.href='" + request.getContextPath() + "/main.page'");
+        out.println("alert('일치하는 회원 정보가 없습니다.');");
+        out.println("location.href='" + request.getContextPath() + "/main.page';");
         out.println("</script>");
         out.flush();
         out.close();

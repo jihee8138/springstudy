@@ -17,6 +17,20 @@
 
 <a href="${contextPath}/bbs/write.page">작성하러가기</a>
 
+<div>
+  <form method="GET"
+        action="${contextPath}/bbs/search.do">
+    <div>
+      <select name="column">
+        <option value="U.EMAIL">작성자</option>
+        <option value="B.CONTENTS">내용</option>
+      </select>
+      <input type="text" name="query" placeholder="검색어입력">
+      <button type="submit">검색</button>
+    </div>
+  </form>
+</div>
+
 <table border="1">
   <thead>
     <tr>
@@ -103,7 +117,7 @@
   const fnBtnReply = () => {
     $('.btn-reply').on('click', (evt) => {
     	// Sign In 체크
-    	
+       fnCheckSignin();
     	
     	// 답글 작성 화면 조작하기
       let write = $(evt.target).closest('.bbs').next();
