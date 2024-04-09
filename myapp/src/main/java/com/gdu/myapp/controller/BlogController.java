@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,21 +52,43 @@ public class BlogController {
     return blogService.getBlogList(request);
   }
   
+  @GetMapping("/updateHit.do")
+  public String updateHit(@RequestParam int blogNo) {
+    blogService.updateHit(blogNo);
+    return "redirect:/blog/detail.do?blogNo=" + blogNo;
+  }
+  
   @GetMapping("/detail.do")
   public String detail(@RequestParam int blogNo, Model model) {
     model.addAttribute("blog", blogService.getBlogByNo(blogNo));
     return "blog/detail";
   }
   
-  @PostMapping(value="/registerComment.do", produces="application/json")
-  public ResponseEntity<Map<String, Object>> registerComment(HttpServletRequest request) {
-    System.out.println(request.getParameter("contents"));
-    System.out.println(request.getParameter("blogNo"));
-    System.out.println(request.getParameter("userNo"));
-    return new ResponseEntity<>(null);
+  @GetMapping("/remove.do")
+  public String removeBlog(@RequestParam int blogNo, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("removeBlog", blogService.removeBlog(blogNo));
+    return "redirect:/blog/list.do";
   }
   
+  @PostMapping(value="/registerComment.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> registerComment(HttpServletRequest request) {
+    return ResponseEntity.ok(Map.of("insertCount", blogService.registerComment(request)));
+  }
   
+  @GetMapping(value="/comment/list.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> commentList(HttpServletRequest request) {
+//    return new ResponseEntity<>(blogService.getCommentList(request)
+//                              , HttpStatus.OK);
+    
+    return ResponseEntity.ok(blogService.getCommentList(request));
+  }
+  
+  @PostMapping(value="comment/registerReply.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> registerReply(HttpServletRequest request) {
+    return ResponseEntity.ok(Map.of("insertReplyCount", blogService.registerReply(request)));
+  }
+  
+
   
   
   

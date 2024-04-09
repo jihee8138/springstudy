@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 public class CommentDto {
 
-  private int commentNo, depth, groupNo;
+  private int commentNo, state, depth, groupNo, blogNo;
   private String contents;
   private Timestamp createDt;
   private UserDto user;
