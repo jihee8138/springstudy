@@ -85,11 +85,52 @@
      WHERE RN BETWEEN #{begin} AND #{end}
   </select>
   
-  <select id="">
-    SELECT UPLOAD_NO, TITLE, CONTENTS, CREATE_DT, MODIFY_DT, USER_NO, EMAIL, ATTACH_COUNT
-      FROM UPLOAR_T
-     ORDER BY UPLOAD_NO DESC;
+  <select id="getUploadByNo"
+          resultMap="UploadMap">
+    SELECT UP.UPLOAD_NO, UP.TITLE, UP.CONTENTS, UP.CREATE_DT, UP.MODIFY_DT
+         , USR.USER_NO, USR.EMAIL
+      FROM USER_T USR INNER JOIN UPLOAD_T UP
+        ON USR.USER_NO = UP.USER_NO
+     WHERE UP.UPLOAD_NO = #{uploadNo}
   </select>
+  
+  <select id="getAttachList"
+          resultType="AttachDto">
+    SELECT ATTACH_NO, UPLOAD_PATH, FILESYSTEM_NAME, ORIGINAL_FILENAME, DOWNLOAD_COUNT, HAS_THUMBNAIL
+      FROM ATTACH_T
+     WHERE UPLOAD_NO = #{uploadNo}
+  </select>
+  
+  <select id="getAttachByNo"
+          resultType="AttachDto">
+    SELECT ATTACH_NO, UPLOAD_PATH, FILESYSTEM_NAME, ORIGINAL_FILENAME, DOWNLOAD_COUNT, HAS_THUMBNAIL
+      FROM ATTACH_T
+     WHERE ATTACH_NO = #{attachNo}
+  </select>
+  
+  <update id="updateDownloadCount">
+    UPDATE ATTACH_T
+       SET DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1
+     WHERE ATTACH_NO = #{attachNo}
+  </update>
+  
+  <update id="updateUpload"
+          parameterType="UploadDto">
+    UPDATE UPLOAD_T
+       SET TITLE = #{title}
+         , CONTENTS = #{contents}
+         , MODIFY_DT = TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD HH24:MI:SS')
+     WHERE UPLOAD_NO = #{uploadNo}
+  </update>
+  
+  <delete id="deleteAttach">
+    DELETE
+      FROM ATTACH_T
+     WHERE ATTACH_NO = #{attachNo}
+  </delete>
+  
+  
+  
   
   
   
